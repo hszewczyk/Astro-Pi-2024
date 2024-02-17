@@ -9,8 +9,9 @@ displacement from pixels to kilometres. After grabbing metadata from each photo 
 calculate the average linear speed.
 
 Second way:
-At the moment of taking the photo, we are acquiring the longitude and latitude of the ISS using the skyfield library. After conversion to radians
-we are able to use the haversine formula for spherical geometry and calculate the great-circle distance between two points on Earth. For the Earth haversine formula cannot be guaranteed correct to better than 0.5% but in our calculations, the error is negligibly small.
+At the moment of taking the photo, we are acquiring the longitude and latitude of the ISS using the skyfield library. After conversion to 
+radians we are able to use the haversine formula for spherical geometry and calculate the great-circle distance between two points on Earth. 
+For the Earth haversine formula cannot be guaranteed correct to better than 0.5% but in our calculations, the error is negligibly small.
 
 Lastly, we calculate the median of the velocities we received and save it to the file named 'result.txt' without exceeding the limit of 
 5 significant digits.
@@ -428,6 +429,11 @@ for i in range(0, number_photos - 1):
         calc_speed(time_diff, dist, elevations[i], GSD)
         calc_speed_geographical(elevations[i], time_diff, lats[i], lats[i+1], longs[i], longs[i+1])
 
+        with open("data.txt", "a", buffering = 1) as file:
+            text = [f"time{i}: {time_diff}s \n", f"lat: {lats[i]} \n", f"long: {longs[i]} \n", f"elev: {elevations[i]} \n", f"dist: {dist} \n",
+                    f"vel1: {velocities1[i]} \n", f"vel2: {velocities2[i]} \n"]
+            file.writelines(text)
+
         print(f"time{i}: ", time_diff, "s") #TODO to tez
         print("lat: ", lats[i]) #TODO to tez
         print("lat2: ", lats[i+1]) #TODO to tez
@@ -459,6 +465,11 @@ formatted_result = "{:.4f}".format(iss_velocity)
 result_file_path = base_folder / "result.txt"
 with open(result_file_path, "w", buffering = 1) as file:
     file.write(str(formatted_result))
+
+with open("data.txt", "a", buffering = 1) as file:
+    text = [f"vel1: {velocities1} \n", f"vel2: {velocities2} \n", f"iss_vel1: {iss_velocity1} \n", f"iss_vel2: {iss_velocity2} \n", 
+            str(datetime.now()-start_time)]
+    file.writelines(text)
 
 for i in range(len(velocities1)): #TODO usunac
     print(f"v1_{i}: ", velocities1[i]) #TODO to tez
