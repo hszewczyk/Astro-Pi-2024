@@ -15,6 +15,39 @@ For the Earth haversine formula cannot be guaranteed correct to better than 0.5%
 
 Lastly, we calculate the median of the velocities we received and save it to the file named 'result.txt' without exceeding the limit of 
 5 significant digits.
+
+One of the rules in the Mission Space Lab Rulebook is 'Your program uses at least one Sense HAT sensor or the camera.'. Our approach is to
+not only use the camera but also calculations based on geographical coordinates. Since the camera will not be fully responsible for the
+result, we asked Astro-Pi and that was the response:
+
+henryk.szewczyk09@gmail.com to enquiries@astro-pi.org 4 February 2024:
+Good morning,
+My team and I have just completed writing a script to perform calculations that in the end save the average linear speed of the ISS to the 
+result.txt file. We used a camera and after taking photos for every X seconds we matched features and calculated speed. Since it is not a 
+very precise method (because of the possibility of having a cloudy environment and the fact that clouds are moving with the wind we can't 
+consider it not knowing the speed and direction of the wind at specific locations and times) and we still have 2 weeks since the end of 
+the competition we thought about seconds approach and calculate the mean of the two approaches. One of the allowed libraries is Skyfield 
+which can return the actual position of the ISS (longitude and latitude). Are we allowed to use geographical coordinates and calculate the 
+great-circle distance using the 'Haversine formula' or 'Thaddeus Vincenty formula'? After that, we would calculate the mean of the speed 
+based on photos and coordinates. One of the points in the rulebook is 'Your program uses at least one Sense HAT sensor or the camera.'. 
+We will be using the camera but it won't be fully responsible for the final result.
+
+Thank you very much,
+Henryk Szewczyk
+
+enquiries@astro-pi.org to henryk.szewczyk09@gmail.com 7 February 2024:
+Hi Henryk,
+
+That would be allowed, absolutely. Also, as you have the opportunity to run code on the ISS, you could also gather data from other sensors, 
+too. Even if you don't use the data to calculate the speed, you can download it and use it later. You may be able to run other experiments 
+on the data you gather, even if you haven't had the idea yet. Make the most of the ten minutes you have!
+
+Kind regards,
+
+Astro Pi Mission Control
+
+
+Based on that e-mails we acknowledged that our approach is fully legitimate and will not raise concerns when testing.
 """
 
 from picamera import PiCamera
@@ -33,8 +66,8 @@ import numpy as np
 start_time = datetime.now() 
 now_time = datetime.now()
 
-number_photos = 25 # number of photos to be taken #TODO zmienic
-time_interval = 10 # time interval between taking photos #TODO zmienic
+number_photos = 25 # number of photos to be taken
+time_interval = 10 # time interval between taking photos
 
 # PiCamera resolution
 res_width = 4056 
@@ -66,7 +99,7 @@ def measure_time():
         bool: True if less than 9 minutes have passed since the script started
     """
     elapsed_time = datetime.now() - start_time
-    return elapsed_time < timedelta(seconds = 540) #TODO zmienic
+    return elapsed_time < timedelta(seconds = 540)
 
 def take_photo(number):
     """
@@ -76,7 +109,7 @@ def take_photo(number):
         number (int): The photo number used in the image filename.
     """
     # Capture an image using the PiCamera and save it with the specified filename
-    cam.capture(f"img{number}.jpg")
+    cam.capture(f"{base_folder}/img{number}.jpg")
 
     # Obtain International Space Station (ISS) coordinates
     elevation, longitude, latitude = get_iss_coordinates()
@@ -425,7 +458,7 @@ for i in range(0, number_photos - 1):
         matches = calc_matches(descr1, descr2)
         coords1, coords2 = find_matching_coords(keypts1, keypts2, matches)
         dist = calc_mean_distance(coords1, coords2)
-        GSD = calc_GSD(elevations[i]) #TODO i or i+1
+        GSD = calc_GSD(elevations[i])
         calc_speed(time_diff, dist, elevations[i], GSD)
         calc_speed_geographical(elevations[i], time_diff, lats[i], lats[i+1], longs[i], longs[i+1])
 
@@ -433,12 +466,6 @@ for i in range(0, number_photos - 1):
             text = [f"time{i}: {time_diff}s \n", f"lat: {lats[i]} \n", f"long: {longs[i]} \n", f"elev: {elevations[i]} \n", f"dist: {dist} \n",
                     f"vel1: {velocities1[i]} \n", f"vel2: {velocities2[i]} \n"]
             file.writelines(text)
-
-        print(f"time{i}: ", time_diff, "s") #TODO to tez
-        print("lat: ", lats[i]) #TODO to tez
-        print("lat2: ", lats[i+1]) #TODO to tez
-        print("long: ", longs[i]) #TODO to tez
-        print("long2: ", longs[i+1]) #TODO to tez
     # If there is no time left - exit the loop and perform needed calculations
     else:
         break
@@ -470,20 +497,6 @@ with open("data.txt", "a", buffering = 1) as file:
     text = [f"vel1: {velocities1} \n", f"vel2: {velocities2} \n", f"iss_vel1: {iss_velocity1} \n", f"iss_vel2: {iss_velocity2} \n", 
             str(datetime.now()-start_time)]
     file.writelines(text)
-
-for i in range(len(velocities1)): #TODO usunac
-    print(f"v1_{i}: ", velocities1[i]) #TODO to tez
-for i in range(len(velocities2)): #TODO usunac
-    print(f"v2_{i}: ", velocities2[i]) #TODO to tez
-        
-                    
-print(elevations) #TODO usunac to na koncu
-print(velocities1) #TODO usunac to
-print(velocities2) #TODO usunac to
-print(iss_velocity1) #TODO to tez
-print(iss_velocity2) #TODO to tez
-print("v: ", iss_velocity) #TODO usunac to
-print("czas: ", datetime.now()-start_time) #TODO usunac to
 
 # Exit the script
 exit()
