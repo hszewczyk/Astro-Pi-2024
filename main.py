@@ -92,11 +92,11 @@ cam.resolution = (res_width, res_height)
 def measure_time():
     """
     Measure the elapsed time since the script started
-    Time limit for the experiment is 10 minutes (600 seconds) but 90 seconds is needed to properly 
-    save data to the result file and close the script 
+    Time limit for the experiment is 10 minutes (600 seconds) but 60 seconds is needed to properly 
+    save data to the result file and close the script. 
 
     Returns:
-        bool: True if less than 9 minutes have passed since the script started
+        bool: True if less than 9 minutes have passed since the script started.
     """
     elapsed_time = datetime.now() - start_time
     return elapsed_time < timedelta(seconds = 540)
@@ -175,10 +175,10 @@ def get_time_diff(img1, img2):
     time_diff = time2 - time1
 
     seconds = (
-                    time_diff.days * 24 * 60 * 60 * 1000 +
-                    time_diff.seconds * 1000 +
-                    time_diff.microseconds / 1000
-                    ) / 1000
+                time_diff.days * 24 * 60 * 60 * 1000 +
+                time_diff.seconds * 1000 +
+                time_diff.microseconds / 1000
+                ) / 1000
 
     return seconds
 
@@ -193,7 +193,7 @@ def conv_to_cv(img1, img2):
     Returns:
         tuple: Tuple containing OpenCV image objects for the two photos.
     """
-    # Read the photos as grayscale images using OpenCV
+    # Read the photos as color images using OpenCV
     img1_cv = cv2.imread(img1, 1)
     img2_cv = cv2.imread(img2, 1)
 
@@ -462,7 +462,9 @@ for i in range(0, number_photos - 1):
         calc_speed(time_diff, dist, elevations[i], GSD)
         calc_speed_geographical(elevations[i], time_diff, lats[i], lats[i+1], longs[i], longs[i+1])
 
-        with open("data.txt", "a", buffering = 1) as file:
+        # Save all gathered data to data.txt file for personal purpose
+        data_file_path = base_folder / "data.txt"
+        with open(data_file_path, "a", buffering = 1) as file:
             text = [f"time{i}: {time_diff}s \n", f"lat: {lats[i]} \n", f"long: {longs[i]} \n", f"elev: {elevations[i]} \n", f"dist: {dist} \n",
                     f"vel1: {velocities1[i]} \n", f"vel2: {velocities2[i]} \n"]
             file.writelines(text)
@@ -490,10 +492,12 @@ formatted_result = "{:.4f}".format(iss_velocity)
 
 # Save the result to a text file
 result_file_path = base_folder / "result.txt"
+data_file_path = base_folder / "data.txt"
 with open(result_file_path, "w", buffering = 1) as file:
     file.write(str(formatted_result))
 
-with open("data.txt", "a", buffering = 1) as file:
+# Save all gathered data to data.txt file for personal purpose
+with open(data_file_path, "a", buffering = 1) as file:
     text = [f"vel1: {velocities1} \n", f"vel2: {velocities2} \n", f"iss_vel1: {iss_velocity1} \n", f"iss_vel2: {iss_velocity2} \n", 
             str(datetime.now()-start_time)]
     file.writelines(text)
