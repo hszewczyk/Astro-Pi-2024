@@ -1,4 +1,4 @@
-## **Project Title: Calculating the Average Linear Speed of the International Space Station (ISS)**
+## **Calculating the Average Linear Speed of the International Space Station (ISS)**
 
 ### **Overview**
 This script calculates the average linear speed of the International Space Station (ISS) using two independent approaches:
