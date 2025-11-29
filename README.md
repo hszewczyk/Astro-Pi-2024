@@ -5,32 +5,6 @@ This script calculates the average linear speed of the International Space Stati
 1. **Image-Based Displacement Calculation**
 2. **Geographical Coordinates-Based Calculation**
 
-By combining these methods, the script produces a robust and accurate estimate of the ISS's velocity, saved to a file named `result.txt`.
-
----
-
-### **Requirements**
-#### **Hardware:**
-- Raspberry Pi with a High-Quality Camera Module.
-- Sense HAT (optional, but compliant with Astro Pi competition requirements).
-
-#### **Software:**
-- Python 3.8+
-- Required Python libraries: 
-  - `picamera`
-  - `orbit`
-  - `time`
-  - `exif`
-  - `datetime`
-  - `pathlib`
-  - `decimal`
-  - `cv2` (OpenCV)
-  - `math`
-  - `statistics`
-  - `numpy`
-
----
-
 ### **How It Works**
 #### **Method 1: Image-Based Calculation**
 1. **Capture Images**: 
@@ -52,28 +26,6 @@ By combining these methods, the script produces a robust and accurate estimate o
 
 #### **Final Velocity**
 - The script takes the median of velocities calculated by both methods and writes the final value to `result.txt` with up to 5 significant digits.
-
----
-
-### **Usage Instructions**
-1. **Setup**:
-   - Install the required Python libraries using `pip`.
-   - Connect the Raspberry Pi HQ Camera to the Raspberry Pi.
-2. **Run the Script**:
-   - Execute the script on the Raspberry Pi. The script runs for approximately 9 minutes, capturing data and performing calculations.
-3. **Output**:
-   - **Result**: The average ISS velocity is saved in `result.txt`.
-   - **Logs**: Intermediate data (timestamps, elevations, distances, velocities, etc.) are saved in `data.txt` for additional analysis.
-
----
-
-### **Important Notes**
-- **Astro Pi Compliance**:
-  - This script adheres to the Mission Space Lab Rulebook requirements by using the camera as a primary data source and incorporating additional geographical data for increased accuracy.
-- **Acknowledgment**:
-  - Permission for this dual-method approach was granted by Astro Pi Mission Control (see email correspondence in the script comments).
-
----
 
 ### **File Descriptions**
 - **`main.py`**:
